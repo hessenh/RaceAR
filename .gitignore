@@ -1,0 +1,14 @@
+.gradle/
+.idea/
+Vuforia.iml
+build.gradle
+build/
+gradle/
+gradlew
+gradlew.bat
+import-summary.txt
+local.properties
+settings.gradle
+app/build
+app/app.iml
+app/build.gradle

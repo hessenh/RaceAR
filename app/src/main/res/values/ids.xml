@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="frag_list" type="id">0x7f08000d</item>
+    <item name="frag_detail" type="id">0x7f08000e</item>
+</resources>
