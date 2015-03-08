@@ -41,6 +41,7 @@ import com.qualcomm.vuforia.samples.SampleApplication.utils.LoadingDialogHandler
 import com.qualcomm.vuforia.samples.SampleApplication.utils.SampleApplicationGLView;
 import com.qualcomm.vuforia.samples.SampleApplication.utils.Texture;
 import com.qualcomm.vuforia.samples.VuforiaSamples.R;
+import com.qualcomm.vuforia.samples.VuforiaSamples.network.*;
 import com.qualcomm.vuforia.samples.VuforiaSamples.ui.SampleAppMenu.SampleAppMenu;
 import com.qualcomm.vuforia.samples.VuforiaSamples.ui.SampleAppMenu.SampleAppMenuGroup;
 import com.qualcomm.vuforia.samples.VuforiaSamples.ui.SampleAppMenu.SampleAppMenuInterface;
@@ -49,9 +50,10 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 public class GamePlay extends Activity implements SampleApplicationControl, SensorEventListener,
-        SampleAppMenuInterface {
+        SampleAppMenuInterface, PacketHandler {
 
     private TrackData trackData;
+    private Client mClient;
     private static final String LOGTAG = "GamePlay";
     SampleApplicationSession vuforiaAppSession;
 
@@ -74,6 +76,7 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
     private boolean mFlash = false;
     private boolean mContAutofocus = false;
     private boolean mExtendedTracking = false;
+    private String ip;
 
     private View mFlashOptionView;
 
@@ -98,6 +101,9 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
 
         vuforiaAppSession = new SampleApplicationSession(this);
 
+        Intent intet = getIntent();
+        ip = getIntent().getStringExtra("ip");
+
         startLoadingAnimation();
         mDatasetStrings.add("StonesAndChips.xml");
         mDatasetStrings.add("Tarmac.xml");
@@ -119,6 +125,7 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
         sensorManager.registerListener(this,sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),SensorManager.SENSOR_DELAY_NORMAL);
 
 
+        mClient = Client.getInstance(this, ip);
 
     }
 
@@ -151,6 +158,19 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
         {
 
         }
+    }
+
+    @Override
+    public void carPacketHandler(CarPacket packet) {
+        mRenderer.updateOpponentCar(packet);
+    }
+
+    @Override
+    public void trackPacketHandler(TrackPacket packet) {
+    }
+
+    @Override
+    public void newConnectionHandler(Connection connection) {
     }
 
     // Process Single Tap event to trigger

@@ -24,13 +24,12 @@ public class GameLobby extends Activity implements PacketHandler {
 
     private Button mPlayBtn, mConnectBtn, mSendTrackBtn;
     private EditText mMyIP, mConnectIP;
+    private final String ip = Config.getDottedDecimalIP(Config.getLocalIPAddress());
     private TextView status;
     Client mClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        String ip = Config.getDottedDecimalIP(Config.getLocalIPAddress());
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_lobby);
@@ -53,6 +52,7 @@ public class GameLobby extends Activity implements PacketHandler {
             @Override
             public void onClick(View view) {
                 Intent gameplay = new Intent(getApplicationContext(), GamePlay.class);
+                gameplay.putExtra("ip", ip);
                 startActivity(gameplay);
             }
         });

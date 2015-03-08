@@ -30,6 +30,9 @@ public class Client extends Thread {
 	public static synchronized Client getInstance(PacketHandler packetHandler, String ip){
 		if(client==null){
 			client = new Client(packetHandler, ip);
+			return client;
+		} else {
+			client.setPacketHandler(packetHandler);
 		}
 		return client;
 	}

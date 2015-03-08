@@ -379,10 +379,19 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
         }
 
     }
-    private void updateOpponentCar(CarPacket carPacket){
+    public void updateOpponentCar(CarPacket carPacket){
         objectList.get(1).setX(carPacket.getX());
         objectList.get(1).setY(carPacket.getY());
         objectList.get(1).setRotation(carPacket.getAngle());
+    }
+
+    public CarPacket getCarPacket() {
+        CarPacket packet = new CarPacket(
+                objectList.get(0).getX(),
+                objectList.get(0).getY(),
+                objectList.get(0).getRotation()
+                );
+        return packet;
     }
 
     public void setTurnValue(float turnValue) {
