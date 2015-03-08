@@ -20,6 +20,7 @@ import com.qualcomm.vuforia.samples.SampleApplication.utils.ObjObject;
 import com.qualcomm.vuforia.samples.SampleApplication.utils.SampleApplication3DModel;
 import com.qualcomm.vuforia.samples.SampleApplication.utils.SampleUtils;
 import com.qualcomm.vuforia.samples.SampleApplication.utils.Texture;
+import com.qualcomm.vuforia.samples.VuforiaSamples.network.CarPacket;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -93,6 +94,7 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
 
         //Add the car to the track
         addCar();
+        addOpponentCar();
 
         //Add the different parts to the objectlist
         addObjectsToList();
@@ -103,6 +105,9 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     private void addCar(){
         objectList = new ArrayList<ObjObject>();
         objectList.add(getPart("carone",50,50,90));
+    }
+    private void addOpponentCar(){
+        objectList.add(getPart("carone",0,50,90));
     }
 
     private void addObjectsToList() {
@@ -373,6 +378,11 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
 
         }
 
+    }
+    private void updateOpponentCar(CarPacket carPacket){
+        objectList.get(1).setX(carPacket.getX());
+        objectList.get(1).setY(carPacket.getY());
+        objectList.get(1).setRotation(carPacket.getAngle());
     }
 
     public void setTurnValue(float turnValue) {
