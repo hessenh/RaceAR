@@ -1,29 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:id="@+id/linearLayout1"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
 
 
-        <Button
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Connect"
+            android:id="@+id/connectBtn"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="35dp" android:layout_below="@+id/editConnectIP" android:layout_centerHorizontal="true"/>
+
+    <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Play"
             android:id="@+id/discover"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="61dp" android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"/>
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/editIP"
+            android:layout_alignParentTop="true" android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" android:layout_marginTop="50dp"
+            android:layout_alignParentRight="true" android:layout_alignParentEnd="true"/>
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/editConnectIP"
+            android:layout_alignParentTop="true" android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true" android:layout_marginTop="110dp"
+            android:layout_alignParentRight="true" android:layout_alignParentEnd="true"/>
 
-        <TextView
+    <Button android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Send Track"
+            android:id="@+id/sendTrackBtn"
+            android:layout_gravity="center_horizontal"
+            android:layout_below="@+id/textStatus" android:layout_centerHorizontal="true"
+            android:layout_marginTop="94dp"/>
+    <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="Large Text"
-            android:id="@+id/peers"
-            android:layout_gravity="center_horizontal" />
-    </LinearLayout>
-</LinearLayout>
+            android:text="Not Connected"
+            android:id="@+id/textStatus"
+            android:layout_centerVertical="true" android:layout_centerHorizontal="true"/>
+
+</RelativeLayout>
