@@ -1,73 +1,96 @@
 package com.qualcomm.vuforia.samples.VuforiaSamples.app.ImageTargets;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.app.DialogFragment;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.net.Uri;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
-import android.net.wifi.p2p.WifiP2pConfig;
-import android.net.wifi.p2p.WifiP2pDevice;
-import android.net.wifi.p2p.WifiP2pDeviceList;
-import android.net.wifi.p2p.WifiP2pInfo;
-import android.net.wifi.p2p.WifiP2pManager;
-import android.net.wifi.p2p.WifiP2pManager.ActionListener;
-import android.net.wifi.p2p.WifiP2pManager.Channel;
-import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
-import android.net.wifi.p2p.WifiP2pManager.PeerListListener;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
+import android.widget.EditText;
+import android.widget.TextView;
 import com.qualcomm.vuforia.samples.VuforiaSamples.R;
+import com.qualcomm.vuforia.samples.VuforiaSamples.network.*;
+
+import java.util.concurrent.ExecutionException;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-public class GameLobby extends Activity {
+public class GameLobby extends Activity implements PacketHandler {
 
-
-    private Button mStart;
+    private Button mPlayBtn, mConnectBtn, mSendTrackBtn;
+    private EditText mMyIP, mConnectIP;
+    private TextView status;
+    Client mClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
+        String ip = Config.getDottedDecimalIP(Config.getLocalIPAddress());
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_lobby);
 
-        mStart = (Button) findViewById(R.id.discover);
-        mStart.setOnClickListener(new OnClickListener() {
+        mClient = new Client(this, ip);
+        mClient.start();
+
+        mPlayBtn = (Button) findViewById(R.id.discover);
+        mConnectBtn = (Button)findViewById(R.id.connectBtn);
+        mSendTrackBtn = (Button) findViewById(R.id.sendTrackBtn);
+        status = (TextView)findViewById(R.id.textStatus);
+
+        mMyIP = (EditText) findViewById(R.id.editIP);
+        mConnectIP = (EditText) findViewById(R.id.editConnectIP);
+
+        mMyIP.setFocusable(false);
+        mMyIP.setText(ip);
+
+        mPlayBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent gameplay = new Intent(getApplicationContext(),GamePlay.class);
+                Intent gameplay = new Intent(getApplicationContext(), GamePlay.class);
                 startActivity(gameplay);
+            }
+        });
+
+
+        final OnClickListener mConnectListener = new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String connectIP = mConnectIP.getText().toString();
+                AsyncTask<String, Void, Boolean> task = new ConnectOperation();
+                task.execute(connectIP);
+                try {
+                    if(task.get())
+                        status.setText("Connected");
+                } catch(ExecutionException e) {
+
+                } catch(InterruptedException e) {
+
+                }
+            }
+        };
+
+        mConnectBtn.setOnClickListener(mConnectListener);
+
+        mSendTrackBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AsyncTask<String, Void, Boolean> task = new SendTrackOperation();
+                task.execute();
+                try {
+                    if(task.get())
+                        status.setText("Track sent");
+                } catch(ExecutionException e) {
+                    Log.e("GameLobby", "mSendTrackBtn", e);
+
+                } catch(InterruptedException e) {
+                    Log.e("GameLobby", "mSendTrackBtn", e);
+                }
             }
         });
     }
@@ -88,4 +111,61 @@ public class GameLobby extends Activity {
         return true;
     }
 
+    @Override
+    public void carPacketHandler(CarPacket packet) {
+
+    }
+
+    @Override
+    public void trackPacketHandler(TrackPacket packet) {
+        TrackData.getInstance().setxPath(packet.getXPath());
+        TrackData.getInstance().setyPath(packet.getYPath());
+        TrackData.getInstance().setRotationPath(packet.getRotationPath());
+        TrackData.getInstance().setPartPath(packet.getPartPath());
+        Log.d("GameLobby", "Track Received");
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                status.setText("Track Received");
+            }
+        });
+    }
+
+    @Override
+    public void newConnectionHandler(Connection connection) {
+        if(mClient.getNumberOfConnections() > 0) {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    status.setText("Connected");
+                }
+            });
+        }
+    }
+
+    private class ConnectOperation extends AsyncTask<String, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(String... params) {
+            int count = params.length;
+            for(int i = 0; i < count; i++) {
+                Log.d("GameLobby", "Connecting to " + params[i]);
+                mClient.connect(params[i]);
+            }
+            return mClient.getNumberOfConnections() > 0;
+        }
+    }
+
+    private class SendTrackOperation extends AsyncTask<String, Void, Boolean> {
+        @Override
+        protected Boolean doInBackground(String... params) {
+            TrackPacket packet = new TrackPacket();
+            packet.setXPath(TrackData.getInstance().getxPath());
+            packet.setYPath(TrackData.getInstance().getyPath());
+            packet.setPartPath(TrackData.getInstance().getPartPath());
+            packet.setRotationPath(TrackData.getInstance().getRotationPath());
+            Log.d("GameLobby", "Sending Track");
+            mClient.sendAll(packet);
+            return true;
+        }
+    }
 }
