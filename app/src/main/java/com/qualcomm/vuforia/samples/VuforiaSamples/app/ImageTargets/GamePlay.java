@@ -149,6 +149,7 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
                             public void run() {
                                 if(mRenderer!=null){
                                     ClientPacket packet = new ClientPacket(ClientPacket.ClientAction.READY);
+                                    packet.setTime(100);
                                     mClient.sendAll(packet);
                                     Log.d("GamePlay", "Host sending");
                                 }
@@ -230,7 +231,7 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
     @Override
     public void clientPacketHandler(ClientPacket packet) {
         if(packet.getAction()==READY){
-            System.out.println("READY");
+            System.out.println("READY - from: " + packet.getTime());
             isReady = true;
             if(host){
                 clock.setStartTime(clock.getTime()+clock.getStartDelta());

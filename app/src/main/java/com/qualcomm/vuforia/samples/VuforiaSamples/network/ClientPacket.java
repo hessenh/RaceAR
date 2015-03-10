@@ -4,7 +4,11 @@ import java.io.Serializable;
 
 public class ClientPacket implements Serializable {
 
-   public enum ClientAction implements Serializable {
+    public void setTime(int time) {
+        this.time = time;
+    }
+
+    public enum ClientAction implements Serializable {
         TIME, START, WIN, END,READY;
     }
 
