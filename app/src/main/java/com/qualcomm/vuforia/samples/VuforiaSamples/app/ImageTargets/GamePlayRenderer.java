@@ -78,7 +78,12 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     private float turn =0;
     private long updateTime;
     private double carSpeed = 1;
+    private final double carSpeedSlow =0.3;
+    private final double carSpeedFast = 1;
     private int tCounter;
+    private double distanceToTrack;
+    private double maxDistance = 50;
+
 
     public GamePlayRenderer(GamePlay activity,SampleApplicationSession session) {
         mActivity = activity;
@@ -104,10 +109,10 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     }
     private void addCar(){
         objectList = new ArrayList<ObjObject>();
-        objectList.add(getPart("carone",50,50,90));
+        objectList.add(getPart("carone",xPath.get(0),yPath.get(0),90));
     }
     private void addOpponentCar(){
-        objectList.add(getPart("carone",0,50,90));
+        objectList.add(getPart("carone2",xPath.get(0),yPath.get(0),90));
     }
 
     private void addObjectsToList() {
@@ -224,18 +229,15 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
         //textureIndex = 0;
         String textureName = mObject.getTextureNames().get(0);
         numberOfIdecies = mObject.getTextureMap().get(textureName);
-        //System.out.println(numberOfIdecies);
     }
 
     private void updateTextureInformation(ObjObject mObject, int counter) {
         indiceCounter += numberOfIdecies;
         if(counter<numberOfTextures){
             textureIndex = mObject.getTextureIndex(counter);
-            System.out.println(textureIndex);
             String textureName = mObject.getTextureNames().get(counter);
             numberOfIdecies = mObject.getTextureMap().get(textureName);
         }
-        //System.out.println(numberOfIdecies);
     }
 
 
@@ -319,7 +321,6 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
                     GLES20.glDrawElements(GLES20.GL_TRIANGLES, numberOfIdecies + indiceCounter, GLES20.GL_UNSIGNED_SHORT, mObject.getIndices());
 
                     //Update the texture
-                    System.out.println(j + " " + mObject.getTextureNames().size());
                     updateTextureInformation(mObject, j+1);
                     /*if (tCounter < numberOfTextures) {
                         updateTextureInformation(mObject, j);
@@ -367,18 +368,47 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     public void updateCarPosition(){
         if(System.currentTimeMillis()-updateTime>20){
             ObjObject car = objectList.get(0);
-
             updateTime = System.currentTimeMillis();
-            objectList.get(0).setRotation((int) (car.getRotation()-turn));
+            objectList.get(0).setRotation((int) (car.getRotation() - turn));
 
             float x  = (float) (Math.cos(Math.toRadians(objectList.get(0).getRotation()))*carSpeed);
             float y = (float) (Math.sin(Math.toRadians(objectList.get(0).getRotation()))*carSpeed);
             objectList.get(0).setX( car.getX() + x);
             objectList.get(0).setY(car.getY() + y);
 
-        }
+            //Find closest object
+            int closestPart = getClosestPart(car);
 
+            if(distanceToTrack>maxDistance/2){
+                carSpeed = carSpeedSlow;
+                if(distanceToTrack>maxDistance){
+                    //If the object is too far away from the closest object, move the object to the track
+                    objectList.get(0).setX(objectList.get(closestPart).getX());
+                    objectList.get(0).setY(objectList.get(closestPart).getY());
+                    objectList.get(0).setRotation(objectList.get(closestPart).getRotation());
+                    carSpeed = carSpeedFast;
+                }
+            }
+            else {
+                carSpeed = carSpeedFast;
+            }
+        }
     }
+
+    private int getClosestPart(ObjObject car) {
+        //Two first objects are the cars, so have to start at 2
+        int pos = 2;
+        double d = car.getDistance(objectList.get(2));
+        for(int i=3;i<objectList.size();i++){
+            if(car.getDistance(objectList.get(i))<d){
+                pos = i;
+                d = car.getDistance(objectList.get(i));
+            }
+        }
+        distanceToTrack = d;
+        return pos;
+    }
+
     public void updateOpponentCar(CarPacket carPacket){
         objectList.get(1).setX(carPacket.getX());
         objectList.get(1).setY(carPacket.getY());

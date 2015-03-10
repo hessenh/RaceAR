@@ -244,7 +244,7 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
                 getAssets()));
         mTextures.add(Texture.loadTextureFromApk("silver.jpg",
                 getAssets()));
-        mTextures.add(Texture.loadTextureFromApk("black.png",
+        mTextures.add(Texture.loadTextureFromApk("darkblue.jpg",
                 getAssets()));
         mTextures.add(Texture.loadTextureFromApk("ImageTargets/Buildings.jpeg",
                 getAssets()));

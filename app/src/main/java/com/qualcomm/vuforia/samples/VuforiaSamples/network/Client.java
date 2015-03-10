@@ -68,7 +68,7 @@ public class Client extends Thread {
 	 * @param obj Object to be sent.
 	 */
 	public void sendAll(Object obj) {
-		Log.d("Client", "Sending object to all clients");
+		//Log.d("Client", "Sending object to all clients");
 		for(Connection connection : this.clients) {
 			connection.send(obj);
 		}

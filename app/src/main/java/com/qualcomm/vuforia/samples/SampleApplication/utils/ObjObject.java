@@ -7,6 +7,8 @@ and other countries. Trademarks of QUALCOMM Incorporated are used with permissio
 
 package com.qualcomm.vuforia.samples.SampleApplication.utils;
 
+import android.util.Log;
+
 import com.qualcomm.vuforia.samples.OBJL;
 import com.qualcomm.vuforia.samples.VuforiaSamples.app.ImageTargets.GamePlay;
 import com.qualcomm.vuforia.samples.VuforiaSamples.app.ImageTargets.ObjTargets;
@@ -158,6 +160,17 @@ public class ObjObject extends MeshObject
         }
         else if(partName.equals("carone")) {
             textureList = new int[]{5,6,7};
+            sizeX = 5 * objectScale;
+            sizeY = 5 * objectScale;
+            sizeZ = 5 * objectScale;
+            west = false;
+            east = false;
+            south = false;
+            north = false;
+            rotateObject(rotationAngle);
+        }
+        else if(partName.equals("carone2")) {
+            textureList = new int[]{8,6,7};
             sizeX = 5 * objectScale;
             sizeY = 5 * objectScale;
             sizeZ = 5 * objectScale;
@@ -538,5 +551,10 @@ public class ObjObject extends MeshObject
 
     public boolean getNorthBoolean() {
         return north;
+    }
+
+    //Returning the distance between two objects
+    public double getDistance(ObjObject objObject) {
+        return Math.sqrt(Math.pow(objObject.getX()-getX(),2) +Math.pow(objObject.getY()-getY(),2));
     }
 }
