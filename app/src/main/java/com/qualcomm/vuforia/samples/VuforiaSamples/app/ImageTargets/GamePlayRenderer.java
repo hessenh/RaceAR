@@ -86,6 +86,9 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     private ArrayList<Integer> traveledPath;
     private boolean winner = false;
 
+    private float xRot,yRot = 0.0f;
+    private float zRot = 1.0f;
+
 
     public GamePlayRenderer(GamePlay activity,SampleApplicationSession session) {
         mActivity = activity;
@@ -281,15 +284,14 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
 
                 float[] modelViewMatrix = modelViewMatrix_Vuforia.getData();
 
-                if(!winner){
-                    Matrix.translateM(modelViewMatrix, 0, objectList.get(i).getX(), objectList.get(i).getY(), objectList.get(i).getZ());
-                }
-                else {
+                if(winner){
                     Matrix.setIdentityM(modelViewMatrix,0);
+                    xRot = +0.01f;
                 }
 
+                Matrix.translateM(modelViewMatrix, 0, objectList.get(i).getX(), objectList.get(i).getY(), objectList.get(i).getZ());
 
-                Matrix.rotateM(modelViewMatrix, 0, mObject.getRotation(), 0f, 0f, 1f);
+                Matrix.rotateM(modelViewMatrix, 0, mObject.getRotation(), xRot, yRot, zRot);
 
                 Matrix.scaleM(modelViewMatrix, 0, objectScale, objectScale, objectScale);
 
@@ -374,7 +376,7 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     }
 
     public void updateCarPosition(){
-        if(System.currentTimeMillis()-updateTime>20){
+        if(System.currentTimeMillis()-updateTime>20 && !winner){
             ObjObject car = objectList.get(0);
             updateTime = System.currentTimeMillis();
             objectList.get(0).setRotation((int) (car.getRotation() - turn));
@@ -438,6 +440,8 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
         objectList.clear();
         car.setX(0);
         car.setY(0);
+        car.setZ(50);
+        car.setRotation(90);
         objectList.add(car);
 
     }
