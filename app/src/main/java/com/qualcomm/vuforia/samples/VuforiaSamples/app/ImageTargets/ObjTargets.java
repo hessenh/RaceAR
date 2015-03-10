@@ -4,12 +4,7 @@ package com.qualcomm.vuforia.samples.VuforiaSamples.app.ImageTargets;
 /**
  * Created by Hans-Olav on 23.02.2015.
  */
-/*===============================================================================
-Copyright (c) 2012-2014 Qualcomm Connected Experiences, Inc. All Rights Reserved.
 
-Vuforia is a trademark of QUALCOMM Incorporated, registered in the United States
-and other countries. Trademarks of QUALCOMM Incorporated are used with permission.
-===============================================================================*/
 
 import android.app.Activity;
 import android.content.Intent;
@@ -62,14 +57,12 @@ import java.util.Vector;
 public class ObjTargets extends Activity implements SampleApplicationControl, SensorEventListener,
         SampleAppMenuInterface
 {
-    private static final String LOGTAG = "ImageTargets";
+    private static final String LOGTAG = "ObjTargets";
 
     SampleApplicationSession vuforiaAppSession;
 
     private DataSet mCurrentDataset;
     private int mCurrentDatasetSelectionIndex = 0;
-    private int mStartDatasetsIndex = 0;
-    private int mDatasetsNumber = 0;
     private ArrayList<String> mDatasetStrings = new ArrayList<String>();
 
     // Our OpenGL view:
@@ -117,7 +110,7 @@ public class ObjTargets extends Activity implements SampleApplicationControl, Se
         mDatasetStrings.add("Tarmac.xml");
 
         vuforiaAppSession
-                .initAR(this, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                .initAR(this, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         mGestureDetector = new GestureDetector(this, new GestureListener());
 
@@ -240,7 +233,6 @@ public class ObjTargets extends Activity implements SampleApplicationControl, Se
         // This is needed for some Droid devices to force portrait
         if (mIsDroidDevice) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 
         try {
@@ -485,7 +477,7 @@ public class ObjTargets extends Activity implements SampleApplicationControl, Se
             else
                 Log.e(LOGTAG, "Unable to enable continuous autofocus");
 
-            mSampleAppMenu = new SampleAppMenu(this, this, "Tracker",
+            mSampleAppMenu = new SampleAppMenu(this, this, "VirTrack",
                     mGlView, mUILayout, null);
             setSampleAppMenuSettings();
 
@@ -604,14 +596,6 @@ public class ObjTargets extends Activity implements SampleApplicationControl, Se
         return mExtendedTracking;
     }
 
-    final public static int CMD_BACK = -1;
-    final public static int CMD_EXTENDED_TRACKING = 1;
-    final public static int CMD_AUTOFOCUS = 2;
-    final public static int CMD_FLASH = 3;
-    final public static int CMD_CAMERA_FRONT = 4;
-    final public static int CMD_CAMERA_REAR = 5;
-    final public static int CMD_DATASET_START_INDEX = 6;
-
 
     // This method sets the menu's settings
     private void setSampleAppMenuSettings()
@@ -620,50 +604,8 @@ public class ObjTargets extends Activity implements SampleApplicationControl, Se
         group = mSampleAppMenu.addGroup("", false);
         group.addTextItem("Parts",0);
         group.addTextItem("Reset",1);
-        group.addTextItem("Start",2);
-        group.addTextItem("Game",3);
+        group.addTextItem("Play",2);
 
-        /*group = mSampleAppMenu.addGroup("", false);
-        group.addTextItem(getString(R.string.menu_back), -1);
-
-        group = mSampleAppMenu.addGroup("", true);
-        group.addSelectionItem(getString(R.string.menu_extended_tracking),
-                CMD_EXTENDED_TRACKING, false);
-        group.addSelectionItem(getString(R.string.menu_contAutofocus),
-                CMD_AUTOFOCUS, mContAutofocus);
-        mFlashOptionView = group.addSelectionItem(
-                getString(R.string.menu_flash), CMD_FLASH, false);
-
-        Camera.CameraInfo ci = new Camera.CameraInfo();
-        boolean deviceHasFrontCamera = false;
-        boolean deviceHasBackCamera = false;
-        for (int i = 0; i < Camera.getNumberOfCameras(); i++)
-        {
-            Camera.getCameraInfo(i, ci);
-            if (ci.facing == Camera.CameraInfo.CAMERA_FACING_FRONT)
-                deviceHasFrontCamera = true;
-            else if (ci.facing == Camera.CameraInfo.CAMERA_FACING_BACK)
-                deviceHasBackCamera = true;
-        }
-
-        if (deviceHasBackCamera && deviceHasFrontCamera)
-        {
-            group = mSampleAppMenu.addGroup(getString(R.string.menu_camera),
-                    true);
-            group.addRadioItem(getString(R.string.menu_camera_front),
-                    CMD_CAMERA_FRONT, false);
-            group.addRadioItem(getString(R.string.menu_camera_back),
-                    CMD_CAMERA_REAR, true);
-        }
-
-        group = mSampleAppMenu
-                .addGroup(getString(R.string.menu_datasets), true);
-        mStartDatasetsIndex = CMD_DATASET_START_INDEX;
-        mDatasetsNumber = mDatasetStrings.size();
-
-        group.addRadioItem("Stones & Chips", mStartDatasetsIndex, true);
-        group.addRadioItem("Tarmac", mStartDatasetsIndex + 1, false);
-        */
         mSampleAppMenu.attachMenu();
     }
 
@@ -685,14 +627,6 @@ public class ObjTargets extends Activity implements SampleApplicationControl, Se
                 mRenderer.resetGame();
                 break;
             case 2:
-                //if(mRenderer.isCircuit()){
-                    Intent startGame = new Intent(this,GameLobby.class);
-                    startActivity(startGame);
-                    finish();
-                    break;
-
-                //}
-            case 3:
                 Intent gameplay = new Intent(this,GameLobby.class);
                 startActivity(gameplay);
                 finish();

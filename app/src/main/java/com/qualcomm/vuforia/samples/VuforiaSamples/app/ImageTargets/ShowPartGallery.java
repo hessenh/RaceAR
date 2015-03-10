@@ -8,6 +8,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -16,8 +17,10 @@ import com.qualcomm.vuforia.samples.VuforiaSamples.R;
 public class ShowPartGallery extends Activity {
 
     private ListView mDrawerList;
-    private final String[] parts_content = {"Back","Straight","Turn","Marker","Tunnel"};
+    private final String[] parts_content = {"Back","Straight","Turn","Tunnel"};
     private TextView parts_title;
+    private String part;
+    private ImageView image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +29,10 @@ public class ShowPartGallery extends Activity {
 
         parts_title = (TextView)findViewById(R.id.settingsTitle);
         parts_title.setText("Parts");
+        part = "straight";
+
+        image = (ImageView)findViewById(R.id.partImage);
+        image.setImageResource(R.drawable.straight);
 
         //Setting the sidebar
         mDrawerList = (ListView) findViewById(R.id.left_part_gallery);
@@ -36,21 +43,24 @@ public class ShowPartGallery extends Activity {
                     case 0:
                         System.out.println("Back from gallery");
                         Intent data = new Intent();
-                        data.putExtra("part", parts_title.getText());
+                        data.putExtra("part", part);
                         setResult(RESULT_OK, data);
                         finish();
                         break;
                     case 1:
-                       parts_title.setText("Straight");
+                        parts_title.setText("Straight");
+                        part = "straight";
+                        image.setImageResource(R.drawable.straight);
                         break;
                     case 2:
                         parts_title.setText("Turn");
+                        part = "turn";
+                        image.setImageResource(R.drawable.turn);
                         break;
                     case 3:
-                        parts_title.setText("Marker");
-                        break;
-                    case 4:
                         parts_title.setText("Tunnel");
+                        part = "tunnel";
+                        image.setImageResource(R.drawable.tunnel);
                         break;
                     default:
                         System.out.println("DEFAULT from settings");

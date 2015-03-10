@@ -139,7 +139,9 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
 
                             @Override
                             public void run() {
-                                mClient.sendAll(mRenderer.getCarPacket());
+                                if(mRenderer!=null){
+                                    mClient.sendAll(mRenderer.getCarPacket());
+                                }
                              }
                         });
                     } catch (Exception e) {
@@ -184,7 +186,9 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
 
     @Override
     public void carPacketHandler(CarPacket packet) {
-        mRenderer.updateOpponentCar(packet);
+        if(mRenderer!=null){
+            mRenderer.updateOpponentCar(packet);
+        }
     }
 
     @Override

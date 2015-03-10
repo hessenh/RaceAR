@@ -13,6 +13,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import com.qualcomm.vuforia.samples.VuforiaSamples.R;
 import com.qualcomm.vuforia.samples.VuforiaSamples.network.*;
@@ -23,16 +24,21 @@ import java.util.concurrent.ExecutionException;
 public class GameLobby extends Activity implements PacketHandler {
 
     private Button mPlayBtn, mConnectBtn, mSendTrackBtn;
-    private EditText mMyIP, mConnectIP;
+    private TextView mMyIP;
+    private EditText mConnectIP;
     private final String ip = Config.getDottedDecimalIP(Config.getLocalIPAddress());
     private TextView status;
     Client mClient;
+    private ImageView mBackgroundImage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_lobby);
+
+        mBackgroundImage = (ImageView)findViewById(R.id.lobbyBg);
+        mBackgroundImage.setImageResource(R.drawable.duellblur);
 
         mClient = new Client(this, ip);
         mClient.start();
@@ -42,7 +48,7 @@ public class GameLobby extends Activity implements PacketHandler {
         mSendTrackBtn = (Button) findViewById(R.id.sendTrackBtn);
         status = (TextView)findViewById(R.id.textStatus);
 
-        mMyIP = (EditText) findViewById(R.id.editIP);
+        mMyIP = (TextView) findViewById(R.id.editIP);
         mConnectIP = (EditText) findViewById(R.id.editConnectIP);
 
         mMyIP.setFocusable(false);

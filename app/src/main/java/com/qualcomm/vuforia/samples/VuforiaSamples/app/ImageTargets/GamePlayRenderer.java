@@ -77,7 +77,7 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     private ArrayList<String> partNames;
     private float turn =0;
     private long updateTime;
-    private double carSpeed = 5;
+    private double carSpeed = 1;
     private int tCounter;
 
     public GamePlayRenderer(GamePlay activity,SampleApplicationSession session) {
