@@ -17,8 +17,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.qualcomm.vuforia.samples.VuforiaSamples.R;
 import com.qualcomm.vuforia.samples.VuforiaSamples.network.*;
-
 import java.util.concurrent.ExecutionException;
+import static com.qualcomm.vuforia.samples.VuforiaSamples.network.ClientPacket.ClientAction.*;
 
 @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class GameLobby extends Activity implements PacketHandler {
@@ -30,12 +30,16 @@ public class GameLobby extends Activity implements PacketHandler {
     private TextView status;
     Client mClient;
     private ImageView mBackgroundImage;
+    private long lastTimeSync;
+    private Clock clock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game_lobby);
+
+        clock = Clock.getInstance();
 
         mBackgroundImage = (ImageView)findViewById(R.id.lobbyBg);
         mBackgroundImage.setImageResource(R.drawable.duellblur);
@@ -54,9 +58,12 @@ public class GameLobby extends Activity implements PacketHandler {
         mMyIP.setFocusable(false);
         mMyIP.setText(ip);
 
+        lastTimeSync = -1;
+
         mPlayBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("GameLobby", "SyncTime: " + String.valueOf(clock.getTime()));
                 Intent gameplay = new Intent(getApplicationContext(), GamePlay.class);
                 gameplay.putExtra("ip", ip);
                 startActivity(gameplay);
@@ -149,6 +156,17 @@ public class GameLobby extends Activity implements PacketHandler {
         }
     }
 
+    @Override
+    public void clientPacketHandler(ClientPacket packet) {
+        if(lastTimeSync > 0) {
+            long timePassed = System.currentTimeMillis() - lastTimeSync;
+            clock.synchronizeTime(timePassed / 2);
+        } else {
+            clock.synchronizeTime();
+            mClient.sendAll(packet);
+        }
+    }
+
     private class ConnectOperation extends AsyncTask<String, Void, Boolean> {
         @Override
         protected Boolean doInBackground(String... params) {
@@ -171,7 +189,11 @@ public class GameLobby extends Activity implements PacketHandler {
             packet.setRotationPath(TrackData.getInstance().getRotationPath());
             Log.d("GameLobby", "Sending Track");
             mClient.sendAll(packet);
+            ClientPacket clientPacket = new ClientPacket(TIME);
+            lastTimeSync = System.currentTimeMillis();
+            mClient.sendAll(clientPacket);
             return true;
         }
     }
+
 }

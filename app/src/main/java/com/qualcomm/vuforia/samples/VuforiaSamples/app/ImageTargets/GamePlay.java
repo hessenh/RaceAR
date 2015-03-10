@@ -90,6 +90,8 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
     private String activePart = "";
     private SensorManager sensorManager;
     private long timestamp;
+    private Clock clock;
+    private long gameStart = -1;
 
     // Called when the activity first starts or the user navigates back to an
     // activity.
@@ -100,6 +102,8 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
         super.onCreate(savedInstanceState);
 
         vuforiaAppSession = new SampleApplicationSession(this);
+
+        clock = Clock.getInstance();
 
         Intent intet = getIntent();
         ip = getIntent().getStringExtra("ip");
@@ -197,6 +201,11 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
 
     @Override
     public void newConnectionHandler(Connection connection) {
+    }
+
+    @Override
+    public void clientPacketHandler(ClientPacket packet) {
+
     }
 
     // Process Single Tap event to trigger
