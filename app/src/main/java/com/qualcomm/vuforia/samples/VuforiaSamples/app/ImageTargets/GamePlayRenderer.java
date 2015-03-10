@@ -77,8 +77,15 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     private ArrayList<String> partNames;
     private float turn =0;
     private long updateTime;
-    private double carSpeed = 5;
+    private double carSpeed = 1;
+    private final double carSpeedSlow =0.3;
+    private final double carSpeedFast = 1;
     private int tCounter;
+    private double distanceToTrack;
+    private double maxDistance = 50;
+    private ArrayList<Integer> traveledPath;
+    private boolean winner = false;
+
 
     public GamePlayRenderer(GamePlay activity,SampleApplicationSession session) {
         mActivity = activity;
@@ -104,33 +111,35 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     }
     private void addCar(){
         objectList = new ArrayList<ObjObject>();
-        objectList.add(getPart("carone",50,50,90));
+        objectList.add(getPart("carone",xPath.get(0),yPath.get(0),90,0));
+        traveledPath = new ArrayList<Integer>();
     }
     private void addOpponentCar(){
-        objectList.add(getPart("carone",0,50,90));
+        objectList.add(getPart("carone2",xPath.get(0),yPath.get(0),90,0));
     }
 
     private void addObjectsToList() {
         if(partNames==null){
-            objectList.add(getPart("turn", 50,0,0));
-            objectList.add(getPart("turn", 50,50,90));
-            objectList.add(getPart("turn", 0,50,180));
-            objectList.add(getPart("turn", 0,0,270));
+            objectList.add(getPart("turn", 50,0,0,2));
+            objectList.add(getPart("turn", 50,50,90,3));
+            objectList.add(getPart("turn", 0,50,180,4));
+            objectList.add(getPart("turn", 0,0,270,5));
         }
         else{
             //Adding all the parts to the list
             for (int i = 0; i < partNames.size(); i++) {
-                objectList.add(getPart(partNames.get(i), xPath.get(i), yPath.get(i),rPath.get(i)));
+                objectList.add(getPart(partNames.get(i), xPath.get(i), yPath.get(i),rPath.get(i),i+2));
             }
 
         }
     }
 
-    private ObjObject getPart(String partName, float x, float y,int r) {
+    private ObjObject getPart(String partName, float x, float y,int r,int id) {
         ObjObject part = new ObjObject(mActivity, partName, objectScale, r);
         part.setX(x);
         part.setY(y);
         part.setRotation(r);
+        part.setID(id);
         return part;
     }
 
@@ -224,18 +233,15 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
         //textureIndex = 0;
         String textureName = mObject.getTextureNames().get(0);
         numberOfIdecies = mObject.getTextureMap().get(textureName);
-        //System.out.println(numberOfIdecies);
     }
 
     private void updateTextureInformation(ObjObject mObject, int counter) {
         indiceCounter += numberOfIdecies;
         if(counter<numberOfTextures){
             textureIndex = mObject.getTextureIndex(counter);
-            System.out.println(textureIndex);
             String textureName = mObject.getTextureNames().get(counter);
             numberOfIdecies = mObject.getTextureMap().get(textureName);
         }
-        //System.out.println(numberOfIdecies);
     }
 
 
@@ -275,8 +281,12 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
 
                 float[] modelViewMatrix = modelViewMatrix_Vuforia.getData();
 
-
-                Matrix.translateM(modelViewMatrix, 0, objectList.get(i).getX(), objectList.get(i).getY(), objectList.get(i).getZ());
+                if(!winner){
+                    Matrix.translateM(modelViewMatrix, 0, objectList.get(i).getX(), objectList.get(i).getY(), objectList.get(i).getZ());
+                }
+                else {
+                    Matrix.setIdentityM(modelViewMatrix,0);
+                }
 
 
                 Matrix.rotateM(modelViewMatrix, 0, mObject.getRotation(), 0f, 0f, 1f);
@@ -319,7 +329,6 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
                     GLES20.glDrawElements(GLES20.GL_TRIANGLES, numberOfIdecies + indiceCounter, GLES20.GL_UNSIGNED_SHORT, mObject.getIndices());
 
                     //Update the texture
-                    System.out.println(j + " " + mObject.getTextureNames().size());
                     updateTextureInformation(mObject, j+1);
                     /*if (tCounter < numberOfTextures) {
                         updateTextureInformation(mObject, j);
@@ -367,18 +376,72 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     public void updateCarPosition(){
         if(System.currentTimeMillis()-updateTime>20){
             ObjObject car = objectList.get(0);
-
             updateTime = System.currentTimeMillis();
-            objectList.get(0).setRotation((int) (car.getRotation()-turn));
+            objectList.get(0).setRotation((int) (car.getRotation() - turn));
 
             float x  = (float) (Math.cos(Math.toRadians(objectList.get(0).getRotation()))*carSpeed);
             float y = (float) (Math.sin(Math.toRadians(objectList.get(0).getRotation()))*carSpeed);
             objectList.get(0).setX( car.getX() + x);
             objectList.get(0).setY(car.getY() + y);
 
+            //Find closest object
+            int closestPart = getClosestPart(car);
+            //Check if winner
+            winner = isWinner(closestPart);
+
+            if(distanceToTrack>maxDistance/2){
+                carSpeed = carSpeedSlow;
+                if(distanceToTrack>maxDistance){
+                    //If the object is too far away from the closest object, move the object to the track
+                    objectList.get(0).setX(objectList.get(closestPart).getX());
+                    objectList.get(0).setY(objectList.get(closestPart).getY());
+                    objectList.get(0).setRotation(objectList.get(closestPart).getRotation());
+                    carSpeed = carSpeedFast;
+                }
+            }
+            //Set the speed to be normal
+            else {
+                carSpeed = carSpeedFast;
+            }
         }
+    }
+
+    private int getClosestPart(ObjObject car) {
+        //Two first objects are the cars, so have to start at 2
+        int pos = 2;
+        double d = car.getDistance(objectList.get(2));
+        for(int i=3;i<objectList.size();i++){
+            if(car.getDistance(objectList.get(i))<d){
+                pos = i;
+                d = car.getDistance(objectList.get(i));
+            }
+        }
+        distanceToTrack = d;
+        return pos;
+    }
+    private boolean isWinner(int pos){
+        if(!traveledPath.contains(pos)){
+            System.out.println("Adding pos: " + pos);
+            traveledPath.add(pos);
+        }
+       // System.out.println(pos + " " + traveledPath.size() + " " + objectList.size() +" "+ traveledPath.get(0));
+        //If the number of traveled parts is equal to the number of parts and the new part is the first part of the track
+        if(traveledPath.size()>=objectList.size()-3 && traveledPath.get(0) == pos){
+            Log.d("GamePlayRenderer","Winning");
+            startCelebration(objectList.get(0));
+            return true;
+        }
+        return false;
+    }
+
+    private void startCelebration(ObjObject car) {
+        objectList.clear();
+        car.setX(0);
+        car.setY(0);
+        objectList.add(car);
 
     }
+
     public void updateOpponentCar(CarPacket carPacket){
         objectList.get(1).setX(carPacket.getX());
         objectList.get(1).setY(carPacket.getY());

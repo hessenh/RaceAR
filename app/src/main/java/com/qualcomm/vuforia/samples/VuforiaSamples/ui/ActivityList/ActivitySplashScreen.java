@@ -38,10 +38,10 @@ public class ActivitySplashScreen extends Activity
         LayoutInflater inflater = LayoutInflater.from(this);
         RelativeLayout layout = (RelativeLayout) inflater.inflate(
             R.layout.splash_screen, null, false);
-        
+
         addContentView(layout, new LayoutParams(LayoutParams.MATCH_PARENT,
             LayoutParams.MATCH_PARENT));
-        
+
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable()
         {
@@ -56,7 +56,7 @@ public class ActivitySplashScreen extends Activity
                 
             }
             
-        }, SPLASH_MILLIS);
+        }, 1000);
     }
     
 }

@@ -127,6 +127,30 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
 
         mClient = Client.getInstance(this, ip);
 
+        final Handler mHandler = new Handler();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // TODO Auto-generated method stub
+                while (true) {
+                    try {
+                        Thread.sleep(100);
+                        mHandler.post(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                if(mRenderer!=null){
+                                    mClient.sendAll(mRenderer.getCarPacket());
+                                }
+                             }
+                        });
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                    }
+                }
+            }
+        }).start();
+
     }
 
     @Override
@@ -162,7 +186,9 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
 
     @Override
     public void carPacketHandler(CarPacket packet) {
-        mRenderer.updateOpponentCar(packet);
+        if(mRenderer!=null){
+            mRenderer.updateOpponentCar(packet);
+        }
     }
 
     @Override
@@ -218,7 +244,7 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
                 getAssets()));
         mTextures.add(Texture.loadTextureFromApk("silver.jpg",
                 getAssets()));
-        mTextures.add(Texture.loadTextureFromApk("black.png",
+        mTextures.add(Texture.loadTextureFromApk("darkblue.jpg",
                 getAssets()));
         mTextures.add(Texture.loadTextureFromApk("ImageTargets/Buildings.jpeg",
                 getAssets()));
