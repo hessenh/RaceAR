@@ -83,6 +83,8 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     private int tCounter;
     private double distanceToTrack;
     private double maxDistance = 50;
+    private ArrayList<Integer> traveledPath;
+    private boolean winner = false;
 
 
     public GamePlayRenderer(GamePlay activity,SampleApplicationSession session) {
@@ -109,33 +111,35 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     }
     private void addCar(){
         objectList = new ArrayList<ObjObject>();
-        objectList.add(getPart("carone",xPath.get(0),yPath.get(0),90));
+        objectList.add(getPart("carone",xPath.get(0),yPath.get(0),90,0));
+        traveledPath = new ArrayList<Integer>();
     }
     private void addOpponentCar(){
-        objectList.add(getPart("carone2",xPath.get(0),yPath.get(0),90));
+        objectList.add(getPart("carone2",xPath.get(0),yPath.get(0),90,0));
     }
 
     private void addObjectsToList() {
         if(partNames==null){
-            objectList.add(getPart("turn", 50,0,0));
-            objectList.add(getPart("turn", 50,50,90));
-            objectList.add(getPart("turn", 0,50,180));
-            objectList.add(getPart("turn", 0,0,270));
+            objectList.add(getPart("turn", 50,0,0,2));
+            objectList.add(getPart("turn", 50,50,90,3));
+            objectList.add(getPart("turn", 0,50,180,4));
+            objectList.add(getPart("turn", 0,0,270,5));
         }
         else{
             //Adding all the parts to the list
             for (int i = 0; i < partNames.size(); i++) {
-                objectList.add(getPart(partNames.get(i), xPath.get(i), yPath.get(i),rPath.get(i)));
+                objectList.add(getPart(partNames.get(i), xPath.get(i), yPath.get(i),rPath.get(i),i+2));
             }
 
         }
     }
 
-    private ObjObject getPart(String partName, float x, float y,int r) {
+    private ObjObject getPart(String partName, float x, float y,int r,int id) {
         ObjObject part = new ObjObject(mActivity, partName, objectScale, r);
         part.setX(x);
         part.setY(y);
         part.setRotation(r);
+        part.setID(id);
         return part;
     }
 
@@ -277,8 +281,12 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
 
                 float[] modelViewMatrix = modelViewMatrix_Vuforia.getData();
 
-
-                Matrix.translateM(modelViewMatrix, 0, objectList.get(i).getX(), objectList.get(i).getY(), objectList.get(i).getZ());
+                if(!winner){
+                    Matrix.translateM(modelViewMatrix, 0, objectList.get(i).getX(), objectList.get(i).getY(), objectList.get(i).getZ());
+                }
+                else {
+                    Matrix.setIdentityM(modelViewMatrix,0);
+                }
 
 
                 Matrix.rotateM(modelViewMatrix, 0, mObject.getRotation(), 0f, 0f, 1f);
@@ -378,6 +386,8 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
 
             //Find closest object
             int closestPart = getClosestPart(car);
+            //Check if winner
+            winner = isWinner(closestPart);
 
             if(distanceToTrack>maxDistance/2){
                 carSpeed = carSpeedSlow;
@@ -389,6 +399,7 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
                     carSpeed = carSpeedFast;
                 }
             }
+            //Set the speed to be normal
             else {
                 carSpeed = carSpeedFast;
             }
@@ -407,6 +418,28 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
         }
         distanceToTrack = d;
         return pos;
+    }
+    private boolean isWinner(int pos){
+        if(!traveledPath.contains(pos)){
+            System.out.println("Adding pos: " + pos);
+            traveledPath.add(pos);
+        }
+       // System.out.println(pos + " " + traveledPath.size() + " " + objectList.size() +" "+ traveledPath.get(0));
+        //If the number of traveled parts is equal to the number of parts and the new part is the first part of the track
+        if(traveledPath.size()>=objectList.size()-3 && traveledPath.get(0) == pos){
+            Log.d("GamePlayRenderer","Winning");
+            startCelebration(objectList.get(0));
+            return true;
+        }
+        return false;
+    }
+
+    private void startCelebration(ObjObject car) {
+        objectList.clear();
+        car.setX(0);
+        car.setY(0);
+        objectList.add(car);
+
     }
 
     public void updateOpponentCar(CarPacket carPacket){
