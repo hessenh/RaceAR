@@ -5,6 +5,8 @@ public class Clock {
     private static Clock clock;
     private long time;
     private long dt;
+    private final long startDelta = 5000;
+    private long startTime;
 
     Clock() {
     }
@@ -27,5 +29,15 @@ public class Clock {
 
     public long getTime() {
         return System.currentTimeMillis() - time;
+    }
+
+    public long getStartDelta() {
+        return startDelta;
+    }
+    public void setStartTime(long startTime) {
+        this.startTime = startTime;
+    }
+    public long getStartTime(){
+        return startTime;
     }
 }

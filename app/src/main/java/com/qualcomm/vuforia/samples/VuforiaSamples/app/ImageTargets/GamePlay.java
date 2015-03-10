@@ -45,6 +45,7 @@ import com.qualcomm.vuforia.samples.VuforiaSamples.network.*;
 import com.qualcomm.vuforia.samples.VuforiaSamples.ui.SampleAppMenu.SampleAppMenu;
 import com.qualcomm.vuforia.samples.VuforiaSamples.ui.SampleAppMenu.SampleAppMenuGroup;
 import com.qualcomm.vuforia.samples.VuforiaSamples.ui.SampleAppMenu.SampleAppMenuInterface;
+import static com.qualcomm.vuforia.samples.VuforiaSamples.network.ClientPacket.ClientAction.*;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -92,6 +93,8 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
     private long timestamp;
     private Clock clock;
     private long gameStart = -1;
+    private boolean isReady = false;
+    private boolean host = false;
 
     // Called when the activity first starts or the user navigates back to an
     // activity.
@@ -107,6 +110,7 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
 
         Intent intet = getIntent();
         ip = getIntent().getStringExtra("ip");
+        host = getIntent().getBooleanExtra("host",false);
 
         startLoadingAnimation();
         mDatasetStrings.add("StonesAndChips.xml");
@@ -135,7 +139,27 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
         new Thread(new Runnable() {
             @Override
             public void run() {
-                // TODO Auto-generated method stub
+                //Send ready package
+                while (!isReady && host) {
+                    try {
+                        Thread.sleep(500);
+                        mHandler.post(new Runnable() {
+
+                            @Override
+                            public void run() {
+                                if(mRenderer!=null){
+                                    ClientPacket packet = new ClientPacket(ClientPacket.ClientAction.READY);
+                                    mClient.sendAll(packet);
+                                    Log.d("GamePlay", "Host sending");
+                                }
+                            }
+                        });
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                    }
+                }
+
+
                 while (true) {
                     try {
                         Thread.sleep(100);
@@ -205,7 +229,22 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
 
     @Override
     public void clientPacketHandler(ClientPacket packet) {
-
+        if(packet.getAction()==READY){
+            System.out.println("READY");
+            isReady = true;
+            if(host){
+                clock.setStartTime(clock.getTime()+clock.getStartDelta());
+                ClientPacket newPacket = new ClientPacket(START,clock.getStartTime());
+                mClient.sendAll(newPacket);
+            }
+            else{
+                mClient.sendAll(packet);
+            }
+        }
+        //Not host - set startTime
+        if(packet.getAction()==START){
+            clock.setStartTime(packet.getTime());
+        }
     }
 
     // Process Single Tap event to trigger

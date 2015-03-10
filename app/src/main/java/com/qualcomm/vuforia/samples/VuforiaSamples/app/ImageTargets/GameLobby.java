@@ -32,6 +32,7 @@ public class GameLobby extends Activity implements PacketHandler {
     private ImageView mBackgroundImage;
     private long lastTimeSync;
     private Clock clock;
+    private boolean host = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,7 @@ public class GameLobby extends Activity implements PacketHandler {
                 Log.d("GameLobby", "SyncTime: " + String.valueOf(clock.getTime()));
                 Intent gameplay = new Intent(getApplicationContext(), GamePlay.class);
                 gameplay.putExtra("ip", ip);
+                gameplay.putExtra("host",host);
                 startActivity(gameplay);
             }
         });
@@ -95,6 +97,8 @@ public class GameLobby extends Activity implements PacketHandler {
             public void onClick(View v) {
                 AsyncTask<String, Void, Boolean> task = new SendTrackOperation();
                 task.execute();
+                //Sending track = host
+                host = true;
                 try {
                     if(task.get())
                         status.setText("Track sent");

@@ -5,7 +5,7 @@ import java.io.Serializable;
 public class ClientPacket implements Serializable {
 
    public enum ClientAction implements Serializable {
-        TIME, START, WIN, END;
+        TIME, START, WIN, END,READY;
     }
 
     private ClientAction action;
