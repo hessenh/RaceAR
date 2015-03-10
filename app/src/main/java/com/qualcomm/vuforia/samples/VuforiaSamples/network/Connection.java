@@ -5,6 +5,7 @@ import android.util.Log;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
+import static com.qualcomm.vuforia.samples.VuforiaSamples.network.ClientPacket.ClientAction.*;
 
 /**
  * Connection class:
@@ -16,7 +17,6 @@ public class Connection extends Thread {
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
 	private Client client;
-	private boolean isRunning = true;
 	
 	Connection(Socket connection, Client client) {
 		this.client = client;
@@ -46,26 +46,32 @@ public class Connection extends Thread {
 			this.ois = new ObjectInputStream(serverInputStream);
 			Log.d("Connection", "Connection to " + socket.getLocalAddress().toString() + " is ready.");
 			// While-loop to ensure continuation of reading in-coming messages
-			while (this.socket.isConnected() && isRunning) {
+			while (this.socket.isConnected()) {
 				try {
 					//Receive object from client
 					Object obj = this.ois.readObject();
+					if(obj instanceof ClientPacket) {
+						ClientPacket packet = (ClientPacket)obj;
+						if(packet.getAction() == END)
+							break;
+					}
 					this.client.receive(obj);
 				} catch (ClassNotFoundException e) {
 					Log.e("Connection", "run", e);
 				}
 			}
-
-			// Close buffers and socket
-			this.ois.close();
-			this.oos.close();
-			serverOutputStream.close();
-			serverInputStream.close();
-			this.socket.close();
-
 		} catch (IOException e1) {
 			Log.e("Connection", "IOException", e1);
 			this.client.removeConnection(this);
+		} finally {
+			try {
+				// Close buffers and socket
+				this.ois.close();
+				this.oos.close();
+				this.socket.close();
+			} catch(IOException e) {
+				Log.e("Connection", "IOException", e);
+			}
 		}
 	}
 	
@@ -90,15 +96,4 @@ public class Connection extends Thread {
 		return this.socket.getInetAddress();
 	}
 
-	/**
-	 * Close established connection.
-	 */
-	public void closeConnection() {
-		try {
-			socket.close();
-		} catch (IOException e) {
-			Log.e("Connection", "closeConnection", e);
-		}
-		
-	}
 }

@@ -5,9 +5,9 @@ import android.util.Log;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import static com.qualcomm.vuforia.samples.VuforiaSamples.network.ClientPacket.ClientAction.*;
 
 
 public class Client extends Thread {
@@ -79,13 +79,14 @@ public class Client extends Thread {
 	 * @param obj
 	 */
 	protected void receive(Object obj) {
-		if(obj instanceof CarPacket) {
-			if(packetHandler != null)
-				packetHandler.carPacketHandler((CarPacket) obj);
-		} else if(obj instanceof TrackPacket) {
-			if(packetHandler != null)
-				packetHandler.trackPacketHandler((TrackPacket) obj);
-		}
+		if(packetHandler == null) return;
+
+		if(obj instanceof ClientPacket)
+			packetHandler.clientPacketHandler((ClientPacket)obj);
+		if(obj instanceof CarPacket)
+			packetHandler.carPacketHandler((CarPacket) obj);
+		if(obj instanceof TrackPacket)
+			packetHandler.trackPacketHandler((TrackPacket) obj);
 
 	}
 	
@@ -105,12 +106,6 @@ public class Client extends Thread {
 		this.clients.remove(client);
 	}
 
-	protected void closeAllConnections() {
-		for(Connection connection : this.clients) {
-			connection.closeConnection();
-		}
-	}
-
 	public void connect(String ip) {
 		try {
 			Connection connection = new Connection(InetAddress.getByName(ip), this);
@@ -122,8 +117,8 @@ public class Client extends Thread {
 	}
 
 	public void disconnect() {
-		for(Connection connection : clients)
-			connection.closeConnection();
+		ClientPacket packet = new ClientPacket(END);
+		sendAll(packet);
 	}
 
 	public void setPacketHandler(PacketHandler handler) {
