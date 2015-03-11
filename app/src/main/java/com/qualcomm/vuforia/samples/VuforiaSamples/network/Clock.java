@@ -6,7 +6,7 @@ public class Clock {
     private long time;
     private long dt;
     private final long startDelta = 5000;
-    private long startTime;
+    private long startTime = 1899419433;
 
     Clock() {
     }

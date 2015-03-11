@@ -159,14 +159,12 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
                         // TODO: handle exception
                     }
                 }
-                if(clock.getTime()>clock.getStartTime()){
-                    mRenderer.startCar();
-                }
 
                 //Start the game
                 while (true) {
                     try {
                         if(clock.getTime()>clock.getStartTime()){
+                            mRenderer.startCar();
                             Thread.sleep(100);
                             mHandler.post(new Runnable() {
 
