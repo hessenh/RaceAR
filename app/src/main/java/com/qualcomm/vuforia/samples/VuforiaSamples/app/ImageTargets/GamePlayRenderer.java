@@ -88,6 +88,7 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
 
     private float xRot,yRot = 0.0f;
     private float zRot = 1.0f;
+    private boolean startGame = false;
 
 
     public GamePlayRenderer(GamePlay activity,SampleApplicationSession session) {
@@ -376,7 +377,7 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     }
 
     public void updateCarPosition(){
-        if(System.currentTimeMillis()-updateTime>20 && !winner){
+        if(System.currentTimeMillis()-updateTime>20 && !winner && startGame){
             ObjObject car = objectList.get(0);
             updateTime = System.currentTimeMillis();
             objectList.get(0).setRotation((int) (car.getRotation() - turn));
@@ -466,7 +467,7 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     }
 
     public void startCar() {
-        this.carSpeed = carSpeedFast;
+        startGame = true;
     }
 }
 
