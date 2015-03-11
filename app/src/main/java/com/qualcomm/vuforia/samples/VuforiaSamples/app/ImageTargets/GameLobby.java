@@ -162,12 +162,14 @@ public class GameLobby extends Activity implements PacketHandler {
 
     @Override
     public void clientPacketHandler(ClientPacket packet) {
-        if(lastTimeSync > 0) {
-            long timePassed = System.currentTimeMillis() - lastTimeSync;
-            clock.synchronizeTime(timePassed / 2);
-        } else {
-            clock.synchronizeTime();
-            mClient.sendAll(packet);
+        if(packet.getAction() == TIME) {
+            if(lastTimeSync > 0) {
+                long timePassed = System.currentTimeMillis() - lastTimeSync;
+                clock.synchronizeTime(timePassed / 2);
+            } else {
+                clock.synchronizeTime();
+                mClient.sendAll(packet);
+            }
         }
     }
 
