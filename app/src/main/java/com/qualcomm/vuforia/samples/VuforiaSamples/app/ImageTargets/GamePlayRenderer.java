@@ -77,7 +77,7 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     private ArrayList<String> partNames;
     private float turn =0;
     private long updateTime;
-    private double carSpeed = 1;
+    private double carSpeed = 0;
     private final double carSpeedSlow =0.3;
     private final double carSpeedFast = 1;
     private int tCounter;
@@ -463,6 +463,10 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
 
     public void setTurnValue(float turnValue) {
         this.turn = turnValue;
+    }
+
+    public void startCar() {
+        this.carSpeed = carSpeedFast;
     }
 }
 
