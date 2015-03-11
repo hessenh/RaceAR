@@ -96,6 +96,7 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
     private boolean isReady = false;
     private boolean host = false;
 
+
     // Called when the activity first starts or the user navigates back to an
     // activity.
     @Override
@@ -149,7 +150,6 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
                             public void run() {
                                 if(mRenderer!=null){
                                     ClientPacket packet = new ClientPacket(ClientPacket.ClientAction.READY);
-                                    packet.setTime(100);
                                     mClient.sendAll(packet);
                                     Log.d("GamePlay", "Host sending");
                                 }
@@ -160,19 +160,22 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
                     }
                 }
 
-
+                //Start the game
                 while (true) {
                     try {
-                        Thread.sleep(100);
-                        mHandler.post(new Runnable() {
+                        if(clock.getTime()>clock.getStartTime()){
+                            Thread.sleep(100);
+                            mHandler.post(new Runnable() {
 
-                            @Override
-                            public void run() {
-                                if(mRenderer!=null){
-                                    mClient.sendAll(mRenderer.getCarPacket());
+                                @Override
+                                public void run() {
+                                    if(mRenderer!=null){
+                                        mClient.sendAll(mRenderer.getCarPacket());
+                                    }
                                 }
-                             }
-                        });
+                            });
+                        }
+
                     } catch (Exception e) {
                         // TODO: handle exception
                     }
