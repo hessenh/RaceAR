@@ -3,6 +3,7 @@ package com.qualcomm.vuforia.samples.VuforiaSamples.app.ImageTargets;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -48,13 +49,31 @@ public class GameLobby extends Activity implements PacketHandler {
         mClient = new Client(this, ip);
         mClient.start();
 
-        mPlayBtn = (Button) findViewById(R.id.discover);
+
         mConnectBtn = (Button)findViewById(R.id.connectBtn);
+        mConnectBtn.setEnabled(false);
+        mConnectBtn.setTextColor(Color.GRAY);
+
         mSendTrackBtn = (Button) findViewById(R.id.sendTrackBtn);
+        mSendTrackBtn.setEnabled(false);
+        mSendTrackBtn.setTextColor(Color.GRAY);
+
+        mPlayBtn = (Button) findViewById(R.id.discover);
+        mPlayBtn.setTextColor(Color.GRAY);
+        //mPlayBtn.setEnabled(false);
+
         status = (TextView)findViewById(R.id.textStatus);
 
         mMyIP = (TextView) findViewById(R.id.editIP);
+
         mConnectIP = (EditText) findViewById(R.id.editConnectIP);
+        mConnectIP.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mConnectBtn.setEnabled(true);
+                mConnectBtn.setTextColor(Color.BLACK);
+            }
+        });
 
         mMyIP.setFocusable(false);
         mMyIP.setText(ip);
@@ -81,7 +100,10 @@ public class GameLobby extends Activity implements PacketHandler {
                 task.execute(connectIP);
                 try {
                     if(task.get())
+                        mSendTrackBtn.setEnabled(true);
+                        mSendTrackBtn.setTextColor(Color.BLACK);
                         status.setText("Connected");
+
                 } catch(ExecutionException e) {
 
                 } catch(InterruptedException e) {
@@ -102,6 +124,8 @@ public class GameLobby extends Activity implements PacketHandler {
                 try {
                     if(task.get())
                         status.setText("Track sent");
+                        mPlayBtn.setTextColor(Color.BLACK);
+                        mPlayBtn.setEnabled(true);
                 } catch(ExecutionException e) {
                     Log.e("GameLobby", "mSendTrackBtn", e);
 

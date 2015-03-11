@@ -66,5 +66,6 @@
     <string name="label_me">ME</string>
     <string name="label_peers">PEERS</string>
     <string name="title_activity_game_play">GamePlay</string>
+    <string name="title_activity_tutorial">Tutorial</string>
 
 </resources>

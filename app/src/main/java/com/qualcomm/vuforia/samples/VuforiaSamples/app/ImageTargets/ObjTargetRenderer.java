@@ -275,8 +275,8 @@ public class ObjTargetRenderer implements GLSurfaceView.Renderer
 
 
 
-                x = modelViewMatrix[13];
-                y = modelViewMatrix[12];
+                x = -modelViewMatrix[12];
+                y = modelViewMatrix[13];
                 z = modelViewMatrix[14];
 
 

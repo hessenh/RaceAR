@@ -5,7 +5,7 @@ public class Clock {
     private static Clock clock;
     private long time;
     private long dt;
-    private final long startDelta = 5000;
+    private final long startDelta = 10000;
     private long startTime = 1899419433;
 
     Clock() {

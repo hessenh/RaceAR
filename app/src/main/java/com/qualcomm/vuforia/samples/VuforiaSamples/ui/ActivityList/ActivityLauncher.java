@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import com.qualcomm.vuforia.samples.VuforiaSamples.R;
 import com.qualcomm.vuforia.samples.VuforiaSamples.app.ImageTargets.GameLobby;
 import com.qualcomm.vuforia.samples.VuforiaSamples.app.ImageTargets.ObjTargets;
+import com.qualcomm.vuforia.samples.VuforiaSamples.app.ImageTargets.Tutorial;
 
 
 // This activity starts activities which demonstrate the Vuforia features
@@ -66,6 +67,8 @@ public class ActivityLauncher extends Activity
                         startActivity(gameLobby);
                         break;
                     case R.id.tutorialBtn:
+                        Intent tutoral = new Intent(ActivityLauncher.this, Tutorial.class);
+                        startActivity(tutoral);
                         Log.d("ActivityLauncher","Not implemented");
                         break;
                 }

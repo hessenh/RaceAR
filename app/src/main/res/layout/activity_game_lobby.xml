@@ -43,6 +43,13 @@
             android:id="@+id/connectBtn"
             android:background="@drawable/button_custom" />
 
+        <Button android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:text="Send Track"
+            android:id="@+id/sendTrackBtn"
+            android:background="@drawable/button_custom" />
+
         <Button
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -51,12 +58,7 @@
             android:id="@+id/discover"
             android:background="@drawable/button_custom" />
 
-        <Button android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="Send Track"
-            android:id="@+id/sendTrackBtn"
-            android:background="@drawable/button_custom" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
