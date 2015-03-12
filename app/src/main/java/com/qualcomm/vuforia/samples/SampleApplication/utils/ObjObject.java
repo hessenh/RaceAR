@@ -245,6 +245,17 @@ public class ObjObject extends MeshObject
             south = false;
             north = false;
         }
+        else if(partName.startsWith("number")) {
+            System.out.println("Created new number!");
+            textureList = new int[]{4};
+            sizeX = 5 * objectScale;
+            sizeY = 5 * objectScale;
+            sizeZ = 5 * objectScale;
+            west = false;
+            east = false;
+            south = false;
+            north = false;
+        }
         else {
             textureList = new int[]{0, 1, 2};
             sizeX = 5 *objectScale;
