@@ -3,6 +3,7 @@ package com.qualcomm.vuforia.samples.VuforiaSamples.app.ImageTargets;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.os.Handler;
 import android.util.Log;
 
 import com.qualcomm.vuforia.Matrix44F;
@@ -21,6 +22,8 @@ import com.qualcomm.vuforia.samples.SampleApplication.utils.SampleApplication3DM
 import com.qualcomm.vuforia.samples.SampleApplication.utils.SampleUtils;
 import com.qualcomm.vuforia.samples.SampleApplication.utils.Texture;
 import com.qualcomm.vuforia.samples.VuforiaSamples.network.CarPacket;
+import com.qualcomm.vuforia.samples.VuforiaSamples.network.ClientPacket;
+import com.qualcomm.vuforia.samples.VuforiaSamples.network.Clock;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -474,7 +477,33 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     }
 
     public void startCountdown() {
-        //objectList.add
+        final int number = 0;
+        final String [] numbers = {"numberfive,numberfour,numberfive,numberfive,numberfive"};
+
+        final Handler mHandler = new Handler();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                //Send ready package
+                while (number<5) {
+                    try {
+
+                        mHandler.post(new Runnable() {
+
+                            public void run() {
+                                objectList.add(getPart(numbers[number],0,0,180,0));
+                            }
+                        });
+                        Thread.sleep(1000);
+                        objectList.remove(objectList.size()-1);
+                    } catch (Exception e) {
+                        // TODO: handle exception
+                    }
+                }
+            }
+        }).start();
+
+
     }
 }
 
