@@ -223,12 +223,35 @@ public class ObjObject extends MeshObject
             south = false;
             north = false;
         }
+        else if(partName.equals("winner")) {
+            System.out.println("Created new winner!");
+            textureList = new int[]{4};
+            sizeX = 10 * objectScale;
+            sizeY = 10 * objectScale;
+            sizeZ = 10 * objectScale;
+            west = false;
+            east = false;
+            south = false;
+            north = false;
+        }
+        else if(partName.equals("loser")) {
+            System.out.println("Created new loser!");
+            textureList = new int[]{4};
+            sizeX = 5 * objectScale;
+            sizeY = 5 * objectScale;
+            sizeZ = 5 * objectScale;
+            west = false;
+            east = false;
+            south = false;
+            north = false;
+        }
         else {
             textureList = new int[]{0, 1, 2};
             sizeX = 5 *objectScale;
             sizeY = 5 * objectScale;
             sizeZ = 5 * objectScale;
         }
+
     }
 
     public int getNumObjectIndex()

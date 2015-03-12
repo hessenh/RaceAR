@@ -285,7 +285,8 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
 
                 float[] modelViewMatrix = modelViewMatrix_Vuforia.getData();
 
-                if(winner){
+               if(mObject.getPartName().equals("winner") || mObject.getPartName().equals("loser")){
+                   mObject.setZ(100);
                     Matrix.setIdentityM(modelViewMatrix,0);
                     xRot = +0.01f;
                 }
@@ -431,20 +432,17 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
         //If the number of traveled parts is equal to the number of parts and the new part is the first part of the track
         if(traveledPath.size()>=objectList.size()-3 && traveledPath.get(0) == pos){
             Log.d("GamePlayRenderer","Winning");
-            startCelebration(objectList.get(0));
+            startCelebration();
             return true;
         }
         return false;
     }
 
-    private void startCelebration(ObjObject car) {
-        objectList.clear();
-        car.setX(0);
-        car.setY(0);
-        car.setZ(50);
-        car.setRotation(90);
-        objectList.add(car);
-
+    private void startCelebration() {
+        objectList.add(getPart("winner",0,0,180,0));
+    }
+    public void startOtherCelebration(){
+        objectList.add(getPart("loser",0,0,180,0));
     }
 
     public void updateOpponentCar(CarPacket carPacket){
