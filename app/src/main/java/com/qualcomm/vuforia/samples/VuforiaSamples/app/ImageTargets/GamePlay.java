@@ -252,26 +252,29 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
 
     @Override
     public void clientPacketHandler(ClientPacket packet) {
-        if(packet.getAction()==READY){
-            System.out.println("READY - from: " + packet.getTime());
-            isReady = true;
-            if(host){
-                clock.setStartTime(clock.getTime()+clock.getStartDelta());
-                ClientPacket newPacket = new ClientPacket(START,clock.getStartTime());
-                mClient.sendAll(newPacket);
+        if(mRenderer!=null){
+
+            if(packet.getAction()==READY){
+                System.out.println("READY - from: " + packet.getTime());
+                isReady = true;
+                if(host){
+                    clock.setStartTime(clock.getTime()+clock.getStartDelta());
+                    ClientPacket newPacket = new ClientPacket(START,clock.getStartTime());
+                    mClient.sendAll(newPacket);
+                }
+                else{
+                    mClient.sendAll(packet);
+                }
             }
-            else{
-                mClient.sendAll(packet);
+            //Not host - set startTime
+            if(packet.getAction()==START){
+                clock.setStartTime(packet.getTime());
             }
-        }
-        //Not host - set startTime
-        if(packet.getAction()==START){
-            clock.setStartTime(packet.getTime());
-        }
-        if(packet.getAction()==WIN) {
-            if(mRenderer != null) {
-                mRenderer.startOtherCelebration();
-                gameOver = true;
+            if(packet.getAction()==WIN) {
+                if(mRenderer != null) {
+                    mRenderer.startOtherCelebration();
+                    gameOver = true;
+                }
             }
         }
     }
