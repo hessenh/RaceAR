@@ -441,6 +441,11 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     private void startCelebration() {
         objectList.add(getPart("winner",0,0,180,0));
     }
+
+    public boolean hasWon() {
+        return winner;
+    }
+
     public void startOtherCelebration(){
         objectList.add(getPart("loser",0,0,180,0));
     }
