@@ -49,7 +49,9 @@ public class Tutorial extends Activity implements Button.OnClickListener {
                 counter--;
                 break;
         }
-        System.out.println(counter);
+        if(counter<0){
+            counter = 0;
+        }
 
         switch (counter) {
             case 0:
@@ -95,6 +97,8 @@ public class Tutorial extends Activity implements Button.OnClickListener {
                         "\n" +
                         "If not, wait for the connection and track, then play!");
                 break;
+            case 9:
+                finish();
         }
     }
 

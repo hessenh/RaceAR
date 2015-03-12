@@ -467,5 +467,9 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     public void startCar() {
         startGame = true;
     }
+
+    public void startCountdown() {
+        //objectList.add
+    }
 }
 

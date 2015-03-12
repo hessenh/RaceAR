@@ -95,6 +95,7 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
     private long gameStart = -1;
     private boolean isReady = false;
     private boolean host = false;
+    private boolean startedCountdown =  false;
 
 
     // Called when the activity first starts or the user navigates back to an
@@ -163,6 +164,11 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
                 //Start the game
                 while (true) {
                     try {
+                        //5 sec to start, start animation
+                        if(clock.getStartTime()+5000>clock.getStartTime() && !startedCountdown){
+                            startedCountdown = true;
+                            mRenderer.startCountdown();
+                        }
                         if(clock.getTime()>clock.getStartTime()){
                             mRenderer.startCar();
                             Thread.sleep(100);
