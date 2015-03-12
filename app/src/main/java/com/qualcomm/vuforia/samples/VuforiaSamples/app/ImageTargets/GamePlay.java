@@ -96,6 +96,8 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
     private boolean isReady = false;
     private boolean host = false;
     private boolean startedCountdown =  false;
+    private boolean gameOver = false;
+    private long gameEnd;
 
 
     // Called when the activity first starts or the user navigates back to an
@@ -169,7 +171,7 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
                             startedCountdown = true;
                             mRenderer.startCountdown();
                         }
-                        if(clock.getTime()>clock.getStartTime()){
+                        if(clock.getTime()>clock.getStartTime() && !gameOver){
                             mRenderer.startCar();
                             Thread.sleep(100);
                             mHandler.post(new Runnable() {
@@ -178,9 +180,19 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
                                 public void run() {
                                     if(mRenderer!=null){
                                         mClient.sendAll(mRenderer.getCarPacket());
+                                        if(mRenderer.hasWon()) {
+                                            ClientPacket packet = new ClientPacket(WIN, clock.getTime());
+                                            mClient.sendAll(packet);
+                                            gameOver = true;
+                                            gameEnd = clock.getTime();
+                                        }
+
                                     }
                                 }
                             });
+                        }
+                        if(gameOver && host) {
+                            mClient.disconnect();
                         }
 
                     } catch (Exception e) {
@@ -255,6 +267,12 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
         //Not host - set startTime
         if(packet.getAction()==START){
             clock.setStartTime(packet.getTime());
+        }
+        if(packet.getAction()==WIN) {
+            if(mRenderer != null) {
+                mRenderer.startOtherCelebration();
+                gameOver = true;
+            }
         }
     }
 
