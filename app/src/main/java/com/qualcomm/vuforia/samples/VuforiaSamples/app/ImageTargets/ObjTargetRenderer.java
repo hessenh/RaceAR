@@ -255,7 +255,7 @@ public class ObjTargetRenderer implements GLSurfaceView.Renderer
 
         // did we find any trackables this frame?
         for (int tIdx = 0; tIdx < state.getNumTrackableResults(); tIdx++) {
-
+            System.out.println("see");
             for(int i=0;i< objectList.size();i++){
                 mObject = objectList.get(i);
                 if(mObject.equals(smallBox)){

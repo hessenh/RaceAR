@@ -106,8 +106,10 @@ public class ObjTargets extends Activity implements SampleApplicationControl, Se
         vuforiaAppSession = new SampleApplicationSession(this);
 
         startLoadingAnimation();
+        mDatasetStrings.add("newTracker.xml");
         mDatasetStrings.add("StonesAndChips.xml");
         mDatasetStrings.add("Tarmac.xml");
+
 
         vuforiaAppSession
                 .initAR(this, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -198,6 +200,10 @@ public class ObjTargets extends Activity implements SampleApplicationControl, Se
             else{
                 passed = !passed;
                 mRenderer.gluePart();
+                if(mRenderer.isCircuit()){
+                    Toast.makeText(getApplicationContext(),
+                            "Track is complete! Open menu and hit play!", Toast.LENGTH_LONG).show();
+                }
             }
             super.onLongPress(e);
         }
@@ -627,9 +633,15 @@ public class ObjTargets extends Activity implements SampleApplicationControl, Se
                 mRenderer.resetGame();
                 break;
             case 2:
-                Intent gameplay = new Intent(this,GameLobby.class);
-                startActivity(gameplay);
-                finish();
+                if(mRenderer.isCircuit()){
+                    Intent gameplay = new Intent(this,GameLobby.class);
+                    startActivity(gameplay);
+                    finish();
+                }
+                else {
+                    Toast.makeText(getApplicationContext(),
+                            "Track is not complete!", Toast.LENGTH_LONG).show();
+                }
                 break;
             default:
                 break;
