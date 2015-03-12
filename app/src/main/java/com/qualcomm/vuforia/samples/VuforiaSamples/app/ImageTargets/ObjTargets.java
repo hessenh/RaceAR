@@ -106,8 +106,8 @@ public class ObjTargets extends Activity implements SampleApplicationControl, Se
         vuforiaAppSession = new SampleApplicationSession(this);
 
         startLoadingAnimation();
-        mDatasetStrings.add("newTracker.xml");
         mDatasetStrings.add("StonesAndChips.xml");
+        mDatasetStrings.add("newTracker.xml");
         mDatasetStrings.add("Tarmac.xml");
 
 
