@@ -152,6 +152,7 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl) {
         if (!mIsActive)
             return;
+        updateCarPosition();
         // Call our function to render content
         renderFrame();
     }
