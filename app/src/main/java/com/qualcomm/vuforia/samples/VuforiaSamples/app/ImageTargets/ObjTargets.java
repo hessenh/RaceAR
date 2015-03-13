@@ -631,6 +631,8 @@ public class ObjTargets extends Activity implements SampleApplicationControl, Se
                 break;
             case 1:
                 mRenderer.resetGame();
+                Toast.makeText(getApplicationContext(),
+                        "Reset complete!", Toast.LENGTH_LONG).show();
                 break;
             case 2:
                 if(mRenderer.isCircuit()){

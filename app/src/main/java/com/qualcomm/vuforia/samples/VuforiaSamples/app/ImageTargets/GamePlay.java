@@ -121,7 +121,7 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
         mDatasetStrings.add("Tarmac.xml");
 
         vuforiaAppSession
-                .initAR(this, ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                .initAR(this, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
         mGestureDetector = new GestureDetector(this, new GestureListener());
 
@@ -334,10 +334,9 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
         Log.d(LOGTAG, "onResume");
         super.onResume();
 
-        // This is needed for some Droid devices to force portrait
+
         if (mIsDroidDevice) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
 
         try {
@@ -712,10 +711,7 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
     {
         SampleAppMenuGroup group;
         group = mSampleAppMenu.addGroup("", false);
-        group.addTextItem("Parts",0);
-        group.addTextItem("Reset",1);
-        group.addTextItem("Start",2);
-        group.addTextItem("Game",3);
+        group.addTextItem("Home",0);
 
 
         mSampleAppMenu.attachMenu();
@@ -731,25 +727,8 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
         switch (command)
         {
             case 0:
-                Intent partGallery = new Intent(this,ShowPartGallery.class);
-                startActivityForResult(partGallery, 0);
-
-                break;
-            case 1:
-                mRenderer.resetGame();
-                break;
-            case 2:
-                //if(mRenderer.isCircuit()){
-                Intent startGame = new Intent(this,GameLobby.class);
-                startActivity(startGame);
                 finish();
-                break;
 
-            //}
-            case 3:
-                Intent gameplay = new Intent(this,GamePlay.class);
-                startActivity(gameplay);
-                finish();
                 break;
             default:
                 break;

@@ -88,6 +88,7 @@ public class GameLobby extends Activity implements PacketHandler {
                 gameplay.putExtra("ip", ip);
                 gameplay.putExtra("host",host);
                 startActivity(gameplay);
+                finish();
             }
         });
 
