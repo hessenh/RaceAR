@@ -173,7 +173,6 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
                             mRenderer.startCountdown();
                         }
                         if(clock.getTime()>clock.getStartTime() && !gameOver){
-                            System.out.println(clock.getStartTime() + " and " + clock.getTime());
                             mRenderer.startCar();
                             Thread.sleep(100);
                             mHandler.post(new Runnable() {

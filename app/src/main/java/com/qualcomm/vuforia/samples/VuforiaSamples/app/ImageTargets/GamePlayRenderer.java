@@ -477,32 +477,24 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     }
 
     public void startCountdown() {
-        final int number = 0;
-        final String [] numbers = {"numberfive,numberfour,numberfive,numberfive,numberfive"};
 
-        final Handler mHandler = new Handler();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                //Send ready package
-                while (number<5) {
-                    try {
+         int number = 1;
+         String [] numbers = {"numberfive,numberfour,numberfive,numberfive,numberfive"};
+         long time = System.currentTimeMillis();
+         boolean countDown = true;
 
-                        mHandler.post(new Runnable() {
+        objectList.add(getPart(numbers[0],0,0,180,0));
 
-                            public void run() {
-                                objectList.add(getPart(numbers[number],0,0,180,0));
-                            }
-                        });
-                        Thread.sleep(1000);
-                        objectList.remove(objectList.size()-1);
-                    } catch (Exception e) {
-                        // TODO: handle exception
-                    }
+         while(countDown){
+            if(time + 1000>System.currentTimeMillis()){
+                objectList.add(getPart(numbers[number],0,0,180,0));
+                time =  System.currentTimeMillis();
+                number++;
+                if(number>4){
+                    countDown = false;
                 }
             }
-        }).start();
-
+         }
 
     }
 }
