@@ -354,6 +354,9 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
 
 
                 SampleUtils.checkGLError("Render Frame");
+                if(objectList.get(i).getID()==-10){
+                    objectList.remove(i);
+                }
             }
 
         }
@@ -487,8 +490,8 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
 
          while(countDown){
             if(time + 1000<System.currentTimeMillis()){
-                objectList.remove(objectList.size()-1);
-                System.out.println(number);
+                objectList.get(objectList.size()-1).setID(-10);
+
                 objectList.add(getPart(numbers[number],0,0,180,0));
                 time =  System.currentTimeMillis();
                 number++;
@@ -497,7 +500,7 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
                 }
             }
          }
-        objectList.remove(objectList.size()-1);
+        objectList.get(objectList.size()-1).setID(-10);
 
     }
 }
