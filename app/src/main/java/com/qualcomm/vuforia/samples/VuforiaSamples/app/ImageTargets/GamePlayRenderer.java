@@ -3,7 +3,6 @@ package com.qualcomm.vuforia.samples.VuforiaSamples.app.ImageTargets;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
-import android.os.Handler;
 import android.util.Log;
 
 import com.qualcomm.vuforia.Matrix44F;
@@ -22,8 +21,6 @@ import com.qualcomm.vuforia.samples.SampleApplication.utils.SampleApplication3DM
 import com.qualcomm.vuforia.samples.SampleApplication.utils.SampleUtils;
 import com.qualcomm.vuforia.samples.SampleApplication.utils.Texture;
 import com.qualcomm.vuforia.samples.VuforiaSamples.network.CarPacket;
-import com.qualcomm.vuforia.samples.VuforiaSamples.network.ClientPacket;
-import com.qualcomm.vuforia.samples.VuforiaSamples.network.Clock;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -79,10 +76,10 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     private float objectScale = 10;
     private ArrayList<String> partNames;
     private float turn =0;
-    private long updateTime;
+    private long lastUpTime;
     private double carSpeed = 0;
-    private final double carSpeedSlow =0.3;
-    private final double carSpeedFast = 1;
+    private final double carSpeedSlow =0.2;
+    private final double carSpeedFast = 0.7;
     private int tCounter;
     private double distanceToTrack;
     private double maxDistance = 50;
@@ -155,7 +152,6 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     public void onDrawFrame(GL10 gl) {
         if (!mIsActive)
             return;
-        updateCarPosition();
         // Call our function to render content
         renderFrame();
     }
@@ -384,15 +380,16 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     }
 
     public void updateCarPosition(){
-        if(System.currentTimeMillis()-updateTime>20 && !winner && startGame){
+        if(!winner && startGame){
             ObjObject car = objectList.get(0);
-            updateTime = System.currentTimeMillis();
             objectList.get(0).setRotation((int) (car.getRotation() - turn));
 
-            float x  = (float) (Math.cos(Math.toRadians(objectList.get(0).getRotation()))*carSpeed);
-            float y = (float) (Math.sin(Math.toRadians(objectList.get(0).getRotation()))*carSpeed);
+            long dt = System.currentTimeMillis() - lastUpTime;
+            float x  = (float) (Math.cos(Math.toRadians(objectList.get(0).getRotation()))*dt*carSpeed);
+            float y = (float) (Math.sin(Math.toRadians(objectList.get(0).getRotation()))*dt*carSpeed);
             objectList.get(0).setX( car.getX() + x);
             objectList.get(0).setY(car.getY() + y);
+            lastUpTime = System.currentTimeMillis();
 
             //Find closest object
             int closestPart = getClosestPart(car);
@@ -482,7 +479,7 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     public void startCountdown() {
         System.out.println("STARTING COUNTDOWN");
          int number = 1;
-         String [] numbers = {"numberfive","numberfour","numberfive","numberfive","numberfive"};
+         String [] numbers = {"numberfive","numberfour","numberthree","numbertwo","numberone"};
          long time = System.currentTimeMillis();
          boolean countDown = true;
 
