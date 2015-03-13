@@ -54,12 +54,12 @@ public class OBJL {
         System.out.println(file + ".obj");
         ReadFromfile(file + ".obj");
 
-        for(int i=0;i<textureNames.size();i++){
+        /*for(int i=0;i<textureNames.size();i++){
             System.out.println(textureNames.get(i));
         }
         for (String key : textureMap.keySet()) {
             System.out.println(key  + " with " + textureMap.get(key));
-        }
+        }*/
 
 
         convertVertexToArray();
@@ -67,10 +67,10 @@ public class OBJL {
         //converTextureToArray();
         //converNormToArray();
 
-        System.out.println("Vericesnumber "  + verticesNumber);
+        /*System.out.println("Vericesnumber "  + verticesNumber);
         System.out.println("IndicesNumber " + indicesNumber);
         System.out.println("NormalNumber " + nomalsNumber);
-        System.out.println("TexturNumber " + vtNumber);
+        System.out.println("TexturNumber " + vtNumber);*/
     }
 
     private void converNormToArray() {

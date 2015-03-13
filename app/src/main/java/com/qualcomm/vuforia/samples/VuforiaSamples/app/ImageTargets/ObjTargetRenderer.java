@@ -71,7 +71,7 @@ public class ObjTargetRenderer implements GLSurfaceView.Renderer
     private static final float OBJECT_SCALE_FLOAT = 3.0f;
     private ObjObject mObject;
 
-    private ArrayList<BoundingBox> boundingBoxes;
+
     private float[] points;
     private float x;
     private float y;

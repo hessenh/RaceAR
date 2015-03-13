@@ -226,8 +226,6 @@ public class ObjTargets extends Activity implements SampleApplicationControl, Se
                 getAssets()));
         mTextures.add(Texture.loadTextureFromApk("concrete.jpg",
                 getAssets()));
-        mTextures.add(Texture.loadTextureFromApk("ImageTargets/Buildings.jpeg",
-                getAssets()));
     }
 
     // Called when the activity will start interacting with the user.
