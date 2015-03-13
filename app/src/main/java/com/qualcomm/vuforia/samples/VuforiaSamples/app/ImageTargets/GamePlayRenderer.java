@@ -477,16 +477,18 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     }
 
     public void startCountdown() {
-
+        System.out.println("STARTING COUNTDOWN");
          int number = 1;
-         String [] numbers = {"numberfive,numberfour,numberfive,numberfive,numberfive"};
+         String [] numbers = {"numberfive","numberfour","numberfive","numberfive","numberfive"};
          long time = System.currentTimeMillis();
          boolean countDown = true;
 
         objectList.add(getPart(numbers[0],0,0,180,0));
 
          while(countDown){
-            if(time + 1000>System.currentTimeMillis()){
+            if(time + 1000<System.currentTimeMillis()){
+                objectList.remove(objectList.size()-1);
+                System.out.println(number);
                 objectList.add(getPart(numbers[number],0,0,180,0));
                 time =  System.currentTimeMillis();
                 number++;
@@ -495,6 +497,7 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
                 }
             }
          }
+        objectList.remove(objectList.size()-1);
 
     }
 }
