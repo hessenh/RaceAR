@@ -167,11 +167,13 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
                 while (true) {
                     try {
                         //5 sec to start, start animation
-                        if(clock.getStartTime()+5000>clock.getStartTime() && !startedCountdown){
+                        if(clock.getTime()+5000>clock.getStartTime() && !startedCountdown){
+                            System.out.println("Starting soooooon");
                             startedCountdown = true;
                             mRenderer.startCountdown();
                         }
                         if(clock.getTime()>clock.getStartTime() && !gameOver){
+                            System.out.println(clock.getStartTime() + " and " + clock.getTime());
                             mRenderer.startCar();
                             Thread.sleep(100);
                             mHandler.post(new Runnable() {
@@ -186,7 +188,6 @@ public class GamePlay extends Activity implements SampleApplicationControl, Sens
                                             gameOver = true;
                                             gameEnd = clock.getTime();
                                         }
-
                                     }
                                 }
                             });

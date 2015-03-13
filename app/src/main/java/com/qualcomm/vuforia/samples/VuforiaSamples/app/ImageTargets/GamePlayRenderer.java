@@ -288,7 +288,7 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
 
                 float[] modelViewMatrix = modelViewMatrix_Vuforia.getData();
 
-               if(mObject.getPartName().equals("winner") || mObject.getPartName().equals("loser")){
+               if(mObject.getPartName().equals("winner") || mObject.getPartName().equals("loser") || mObject.getPartName().startsWith("number")){
                    mObject.setZ(100);
                     Matrix.setIdentityM(modelViewMatrix,0);
                     xRot = +0.01f;
