@@ -78,8 +78,8 @@ public class GamePlayRenderer implements GLSurfaceView.Renderer {
     private float turn =0;
     private long lastUpTime;
     private double carSpeed = 0;
-    private final double carSpeedSlow =0.01;
-    private final double carSpeedFast = 0.04;
+    private final double carSpeedSlow =0.008;
+    private final double carSpeedFast = 0.02;
     private int tCounter;
     private double distanceToTrack;
     private double maxDistance = 50;
