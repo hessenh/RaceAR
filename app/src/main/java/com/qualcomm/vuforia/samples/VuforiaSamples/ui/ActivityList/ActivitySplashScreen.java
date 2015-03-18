@@ -56,7 +56,8 @@ public class ActivitySplashScreen extends Activity
                 
             }
             
-        }, 1000);
+        }, 3000);
+        
     }
     
 }
