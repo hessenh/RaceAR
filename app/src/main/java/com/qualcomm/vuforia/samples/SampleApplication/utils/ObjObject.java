@@ -470,7 +470,7 @@ public class ObjObject extends MeshObject
     }
 
     private void rotateObject(int angle) {
-        if (partName.equals("straight")) {
+        if (partName.equals("straight")||partName.equals("tunnel")) {
 
             //System.out.println("Flipping straight");
             if(this.rotation==0 || this.rotation == 180){
